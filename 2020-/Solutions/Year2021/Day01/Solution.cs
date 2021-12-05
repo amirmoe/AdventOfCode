@@ -4,7 +4,6 @@ namespace AdventOfCode.Solutions.Year2021.Day01
     {
         public Day01() : base(01, 2021, "Sonar Sweep")
         {
-            // DebugInput = "199\n200\n208\n210\n200\n207\n240\n269\n260\n263";
         }
 
         protected override string SolvePartOne()
