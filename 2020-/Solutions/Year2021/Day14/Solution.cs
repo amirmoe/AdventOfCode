@@ -25,7 +25,7 @@ internal class Day14 : ASolution
 
     private static long Solve(string input, int steps)
     {
-        var lines = input.Split("\r\n\r\n");
+        var lines = input.Split("\n\n");
         var word = lines[0];
         var translationDictionary = lines[1]
             .SplitByNewline()

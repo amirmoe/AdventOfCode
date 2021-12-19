@@ -6,7 +6,7 @@ namespace AdventOfCode.Solutions.Year2021.Day08;
 
 internal class Day08 : ASolution
 {
-    public Day08() : base(08, 2021, "Seven Segment Search", true)
+    public Day08() : base(08, 2021, "Seven Segment Search")
     {
     }
 

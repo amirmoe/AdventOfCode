@@ -77,7 +77,7 @@ internal class Day13 : ASolution
 
     private static (string[,] map, List<string> folds) GetMapAndFolds(string input)
     {
-        var lines = input.Split("\r\n\r\n");
+        var lines = input.Split("\n\n");
 
         var instructions = lines[0]
             .SplitByNewline()
