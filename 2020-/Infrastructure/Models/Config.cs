@@ -67,9 +67,9 @@ namespace AdventOfCode.Infrastructure.Models
         {
             var options = new JsonSerializerOptions()
             {
-                IgnoreNullValues = true,
                 PropertyNameCaseInsensitive = true,
-                WriteIndented = true
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
             Config config;
             if (File.Exists(path))

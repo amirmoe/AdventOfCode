@@ -1,3 +1,5 @@
+using AdventOfCode.Utilities;
+
 namespace AdventOfCode.Solutions.Year2020.Day01
 {
 

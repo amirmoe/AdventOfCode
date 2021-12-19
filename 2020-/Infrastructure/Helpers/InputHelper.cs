@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 
 namespace AdventOfCode.Infrastructure.Helpers
 {
@@ -25,9 +26,16 @@ namespace AdventOfCode.Infrastructure.Helpers
                     var currentEst = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Utc).AddHours(-5);
                     if (currentEst < new DateTime(year, 12, day)) throw new InvalidOperationException();
 
-                    using var client = new WebClient();
-                    client.Headers.Add(HttpRequestHeader.Cookie, Cookie);
-                    input = client.DownloadString(inputUrl).Trim();
+                    using var client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Cookie", Cookie);
+                    
+                    using (var response = client.GetAsync(inputUrl).Result)
+                    {
+                        using (var content = response.Content)
+                        {
+                            input = content.ReadAsStringAsync().Result.Trim();
+                        }
+                    }
                     File.WriteAllText(inputFilepath, input);
                 }
                 catch (WebException e)
