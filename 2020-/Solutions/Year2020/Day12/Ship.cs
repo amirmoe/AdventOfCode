@@ -7,7 +7,7 @@ namespace AdventOfCode.Solutions.Year2020.Day12
         public int X { get; set; }
         public int Y { get; set; }
         public int Rotation { get; set; }
-        public int ManhattanDistance => Utilities.Utilities.ManhattanDistance((0, 0), (X, Y));
+        public int ManhattanDistance => Utilities.HelperFunctions.ManhattanDistance((0, 0), (X, Y));
         
         //part 2
         public int WpX { get; set; }
