@@ -44,16 +44,11 @@ internal class Day06 : ASolution
                 }
             )
             .ToList();
-        var races = new List<(long Time, long Distance)>();
-        for (var i = 0; i < numbers.First().Count; i++)
-        {
-            var times = numbers.First();
-            var distances = numbers.Last();
 
-            races.Add((times[i], distances[i]));
-        }
-
-        return races;
+        return
+            numbers
+                .First()
+                .Zip(numbers.Last(), (time, distance) => (time, distance)).ToList();
     }
 
     private static string Solve(List<(long Time, long Distance)> races)
