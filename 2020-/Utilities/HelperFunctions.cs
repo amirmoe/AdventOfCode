@@ -49,8 +49,10 @@ namespace AdventOfCode.Utilities
         }
 
         public static double FindGcd(double a, double b) => (a % b == 0) ? b : FindGcd(b, a % b);
+        public static long FindGcd(long a, long b) => (a % b == 0) ? b : FindGcd(b, a % b);
 
         public static double FindLcm(double a, double b) => a * b / FindGcd(a, b);
+        public static long FindLcm(long a, long b) => a * b / FindGcd(a, b);
         
         public static int Modulo(int x, int m) {
             return (x%m + m)%m;
