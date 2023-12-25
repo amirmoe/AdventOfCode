@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Utilities;
 
@@ -42,15 +43,38 @@ public class Coordinate : IEquatable<Coordinate>
     {
         return HashCode.Combine(Y, X);
     }
+    
+    public override string ToString()
+    {
+        return $"(Y:{Y},X:{X})";
+    }
 }
 
 public class Map
 {
+    public int Height { get; set; }
+    public int Width { get; set; }
     private Dictionary<Coordinate, string> Coordinates { get; } = new();
 
     public void AddCoordinate(Coordinate coordinate, string value)
     {
-        Coordinates.Add(coordinate, value);
+        if (Coordinates.ContainsKey(coordinate))
+        {
+            Coordinates[coordinate] = value;
+        }
+        else
+        {
+            Coordinates.Add(coordinate, value);
+            UpdateSize(coordinate);
+        }
+    }
+
+    private void UpdateSize(Coordinate coordinate)
+    {
+        if (coordinate.Y + 1 > Height)
+            Height = coordinate.Y + 1;
+        if (coordinate.X + 1 > Width)
+            Width = coordinate.X + 1;
     }
 
     public bool ContainsCoordinate(Coordinate coordinate)
@@ -61,6 +85,23 @@ public class Map
     public string Value(Coordinate coordinate)
     {
         return Coordinates[coordinate];
+    }
+
+    public List<KeyValuePair<Coordinate, string>> Values()
+    {
+        return Coordinates.ToList();
+    }
+
+    public void Print()
+    {
+        for (var i = 0; i < Height; i++)
+        {
+            for (var j = 0; j < Width; j++)
+            {
+                Console.Write(Coordinates[new Coordinate(i,j)]);
+            }
+            Console.WriteLine();
+        }
     }
 }
 
