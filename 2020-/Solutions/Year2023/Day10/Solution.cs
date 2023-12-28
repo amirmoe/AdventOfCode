@@ -14,7 +14,7 @@ internal class Day10 : ASolution
     protected override string SolvePartOne()
     {
         var start = FindStart(Input);
-        var map = MapFunctions.GetMapFromInput(Input);
+        var map = new Map(Input);
         var visited = GetLoop(map, start);
         return (visited.Count / 2).ToString();
     }
@@ -22,7 +22,7 @@ internal class Day10 : ASolution
     protected override string SolvePartTwo()
     {
         var start = FindStart(Input);
-        var map = MapFunctions.GetMapFromInput(Input);
+        var map = new Map(Input);
         var visited = GetLoop(map, start);
         map
             .Values()
