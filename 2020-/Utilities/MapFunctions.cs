@@ -4,10 +4,33 @@ using System.Linq;
 
 namespace AdventOfCode.Utilities;
 
-public static class MapFunctions
+public static class NeighbourHelper
 {
-    public static readonly (Direction Direction, (int Y, int X) Coordinate)[] NeighbourDeltas =
-        { (Direction.South, (1, 0)), (Direction.East, (0, 1)), (Direction.North, (-1, 0)), (Direction.West, (0, -1)) };
+    public static readonly (Direction Direction, (int Y, int X) Delta)[] CardinalNeighbourDeltas =
+    {
+        (Direction.South, (1, 0)),
+        (Direction.East, (0, 1)),
+        (Direction.North, (-1, 0)),
+        (Direction.West, (0, -1))
+    };
+
+    public static readonly (Direction Direction, (int Y, int X) Delta)[] DiagonalNeighbourDeltas =
+    {
+        (Direction.NorthWest, (-1, -1)),
+        (Direction.NorthEast, (-1, 1)),
+        (Direction.SouthWest, (1, -1)),
+        (Direction.SouthEast, (1, 1))
+    };
+
+    public static readonly (Direction Direction, (int Y, int X) Delta)[] AllNeighbourDeltas =
+        CardinalNeighbourDeltas.Concat(DiagonalNeighbourDeltas).ToArray();
+
+    public static readonly IEnumerable<Direction> AllNeighbourDirections =
+        AllNeighbourDeltas.Select(x => x.Direction);
+    
+    public static readonly Dictionary<Direction, (int Y, int X)> AllNeighbourDeltaMap = 
+        AllNeighbourDeltas
+            .ToDictionary(pair => pair.Direction, pair => pair.Delta);
 }
 
 public class Coordinate : IEquatable<Coordinate>
@@ -37,6 +60,39 @@ public class Coordinate : IEquatable<Coordinate>
     {
         return $"(Y:{Y},X:{X})";
     }
+
+    public IEnumerable<Coordinate> CardinalNeighbours(Map map = null)
+    {
+        return NeighbourHelper
+            .CardinalNeighbourDeltas
+            .ToList()
+            .Select(delta => new Coordinate(Y + delta.Delta.Y, X + delta.Delta.X))
+            .Where(coordinate => map == null || map.ContainsCoordinate(coordinate));
+    }
+
+    public IEnumerable<Coordinate> DiagonalNeighbours(Map map = null)
+    {
+        return NeighbourHelper
+            .CardinalNeighbourDeltas
+            .ToList()
+            .Select(delta => new Coordinate(Y + delta.Delta.Y, X + delta.Delta.X))
+            .Where(coordinate => map == null || map.ContainsCoordinate(coordinate));
+    }
+
+    public IEnumerable<Coordinate> AllNeighbours(Map map = null)
+    {
+        return NeighbourHelper
+            .CardinalNeighbourDeltas
+            .ToList()
+            .Select(delta => new Coordinate(Y + delta.Delta.Y, X + delta.Delta.X))
+            .Where(coordinate => map == null || map.ContainsCoordinate(coordinate));
+    }
+
+    public Coordinate Neighbour(Direction direction)
+    {
+        var delta = NeighbourHelper.AllNeighbourDeltaMap[direction];
+        return new Coordinate(Y + delta.Y, X + delta.X);
+    }
 }
 
 public class Map
@@ -59,15 +115,10 @@ public class Map
 
     public void AddCoordinate(Coordinate coordinate, string value)
     {
-        if (Coordinates.ContainsKey(coordinate))
-        {
+        if (!Coordinates.TryAdd(coordinate, value))
             Coordinates[coordinate] = value;
-        }
         else
-        {
-            Coordinates.Add(coordinate, value);
             UpdateSize(coordinate);
-        }
     }
 
     private void UpdateSize(Coordinate coordinate)
@@ -86,6 +137,11 @@ public class Map
     public string Value(Coordinate coordinate)
     {
         return Coordinates[coordinate];
+    }
+
+    public string TryGetCoordinateValue(Coordinate coordinate)
+    {
+        return Coordinates.GetValueOrDefault(coordinate);
     }
 
     public List<KeyValuePair<Coordinate, string>> Values()
@@ -108,5 +164,9 @@ public enum Direction
     North,
     South,
     West,
-    East
+    East,
+    NorthWest,
+    NorthEast,
+    SouthWest,
+    SouthEast
 }

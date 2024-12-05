@@ -106,9 +106,9 @@ internal class Day10 : ASolution
     {
         var pointValue = map.Value(point);
         var connectingNeighbour = new List<Direction>();
-        foreach (var neighbourDelta in MapFunctions.NeighbourDeltas)
+        foreach (var neighbourDelta in NeighbourHelper.CardinalNeighbourDeltas)
         {
-            var neighbourCoordinate = new Coordinate(point.Y + neighbourDelta.Coordinate.Y, point.X + neighbourDelta.Coordinate.X);
+            var neighbourCoordinate = new Coordinate(point.Y + neighbourDelta.Delta.Y, point.X + neighbourDelta.Delta.X);
             if (!map.ContainsCoordinate(neighbourCoordinate)) continue;
 
             var neighbourValue = map.Value(neighbourCoordinate);
@@ -143,9 +143,9 @@ internal class Day10 : ASolution
     {
         var pointValue = map.Value(point);
         var connectingNeighbour = new List<Coordinate>();
-        foreach (var neighbourDelta in MapFunctions.NeighbourDeltas)
+        foreach (var neighbourDelta in NeighbourHelper.CardinalNeighbourDeltas)
         {
-            var neighbourCoordinate = new Coordinate(point.Y + neighbourDelta.Coordinate.Y, point.X + neighbourDelta.Coordinate.X);
+            var neighbourCoordinate = new Coordinate(point.Y + neighbourDelta.Delta.Y, point.X + neighbourDelta.Delta.X);
             if (!map.ContainsCoordinate(neighbourCoordinate)) continue;
 
             var neighbourValue = map.Value(neighbourCoordinate);
