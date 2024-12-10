@@ -14,7 +14,7 @@ internal class Day10 : ASolution
     protected override string SolvePartOne()
     {
         var start = FindStart(Input);
-        var map = new Map(Input);
+        var map = new Map<string>(Input);
         var visited = GetLoop(map, start);
         return (visited.Count / 2).ToString();
     }
@@ -22,7 +22,7 @@ internal class Day10 : ASolution
     protected override string SolvePartTwo()
     {
         var start = FindStart(Input);
-        var map = new Map(Input);
+        var map = new Map<string>(Input);
         var visited = GetLoop(map, start);
         map
             .Values()
@@ -73,7 +73,7 @@ internal class Day10 : ASolution
         return insideLoop.Count.ToString();
     }
 
-    private List<Coordinate> GetLoop(Map map, Coordinate root)
+    private List<Coordinate> GetLoop(Map<string> map, Coordinate root)
     {
         var queue = new Queue<Coordinate>();
         var visited = new HashSet<Coordinate> { root };
@@ -102,7 +102,7 @@ internal class Day10 : ASolution
         return new Coordinate(index / width, index % width);
     }
 
-    private static string DetermineStart(Map map, Coordinate point)
+    private static string DetermineStart(Map<string> map, Coordinate point)
     {
         var pointValue = map.Value(point);
         var connectingNeighbour = new List<Direction>();
@@ -139,7 +139,7 @@ internal class Day10 : ASolution
         return "-";
     }
 
-    private static IEnumerable<Coordinate> FindConnectingNeighbours(Map map, Coordinate point)
+    private static IEnumerable<Coordinate> FindConnectingNeighbours(Map<string> map, Coordinate point)
     {
         var pointValue = map.Value(point);
         var connectingNeighbour = new List<Coordinate>();

@@ -65,7 +65,7 @@ internal class Day05 : ASolution
             if (dict.ContainsKey(parts.First()))
                 dict[parts.First()].Add(parts.Last());
             else
-                dict.Add(parts.First(), new HashSet<int> { parts.Last() });
+                dict.Add(parts.First(), [parts.Last()]);
         }
 
         return dict;

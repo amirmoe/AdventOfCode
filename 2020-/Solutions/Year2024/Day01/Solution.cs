@@ -40,7 +40,7 @@ internal class Day01 : ASolution
 
         Input.SplitByNewline().ToList().ForEach(row =>
         {
-            var values = row.Split(new[] { "   " }, StringSplitOptions.RemoveEmptyEntries);
+            var values = row.Split(["   "], StringSplitOptions.RemoveEmptyEntries);
             var leftValue = int.Parse(values[0]);
             var rightValue = int.Parse(values[1]);
             left.Add(leftValue);

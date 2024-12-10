@@ -8,11 +8,13 @@ public static class NeighbourHelper
 {
     public static readonly (Direction Direction, (int Y, int X) Delta)[] CardinalNeighbourDeltas =
     {
-        (Direction.South, (1, 0)),
-        (Direction.East, (0, 1)),
         (Direction.North, (-1, 0)),
+        (Direction.East, (0, 1)),
+        (Direction.South, (1, 0)),
         (Direction.West, (0, -1))
     };
+
+    public static readonly Direction[] CardinalDirections = CardinalNeighbourDeltas.Select(x => x.Direction).ToArray();
 
     public static readonly (Direction Direction, (int Y, int X) Delta)[] DiagonalNeighbourDeltas =
     {
@@ -27,8 +29,8 @@ public static class NeighbourHelper
 
     public static readonly IEnumerable<Direction> AllNeighbourDirections =
         AllNeighbourDeltas.Select(x => x.Direction);
-    
-    public static readonly Dictionary<Direction, (int Y, int X)> AllNeighbourDeltaMap = 
+
+    public static readonly Dictionary<Direction, (int Y, int X)> AllNeighbourDeltaMap =
         AllNeighbourDeltas
             .ToDictionary(pair => pair.Direction, pair => pair.Delta);
 }
@@ -61,7 +63,7 @@ public class Coordinate : IEquatable<Coordinate>
         return $"(Y:{Y},X:{X})";
     }
 
-    public IEnumerable<Coordinate> CardinalNeighbours(Map map = null)
+    public IEnumerable<Coordinate> CardinalNeighbours<T>(Map<T> map = null)
     {
         return NeighbourHelper
             .CardinalNeighbourDeltas
@@ -70,7 +72,7 @@ public class Coordinate : IEquatable<Coordinate>
             .Where(coordinate => map == null || map.ContainsCoordinate(coordinate));
     }
 
-    public IEnumerable<Coordinate> DiagonalNeighbours(Map map = null)
+    public IEnumerable<Coordinate> DiagonalNeighbours<T>(Map<T> map = null)
     {
         return NeighbourHelper
             .CardinalNeighbourDeltas
@@ -79,7 +81,7 @@ public class Coordinate : IEquatable<Coordinate>
             .Where(coordinate => map == null || map.ContainsCoordinate(coordinate));
     }
 
-    public IEnumerable<Coordinate> AllNeighbours(Map map = null)
+    public IEnumerable<Coordinate> AllNeighbours<T>(Map<T> map = null)
     {
         return NeighbourHelper
             .CardinalNeighbourDeltas
@@ -95,14 +97,14 @@ public class Coordinate : IEquatable<Coordinate>
     }
 }
 
-public class Map
+public class Map<T>
 {
     public Map(string input)
     {
         var lines = input.SplitByNewline();
         for (var i = 0; i < lines.Length; i++)
         for (var j = 0; j < lines[i].Length; j++)
-            AddCoordinate(new Coordinate(i, j), lines[i][j].ToString());
+            AddCoordinate(new Coordinate(i, j), ConvertValue(lines[i][j]));
     }
 
     public Map()
@@ -111,9 +113,21 @@ public class Map
 
     public int Height { get; set; }
     public int Width { get; set; }
-    private Dictionary<Coordinate, string> Coordinates { get; } = new();
+    private Dictionary<Coordinate, T> Coordinates { get; } = new();
+    
+    private static T ConvertValue(char c)
+    {
+        if (typeof(T) == typeof(int))
+            return (T)(object)int.Parse(c.ToString());
+        if (typeof(T) == typeof(char))
+            return (T)(object)c;
+        if (typeof(T) == typeof(string))
+            return (T)(object)c.ToString();
 
-    public void AddCoordinate(Coordinate coordinate, string value)
+        throw new InvalidOperationException($"Unsupported type: {typeof(T)}");
+    }
+
+    public void AddCoordinate(Coordinate coordinate, T value)
     {
         if (!Coordinates.TryAdd(coordinate, value))
             Coordinates[coordinate] = value;
@@ -134,17 +148,22 @@ public class Map
         return Coordinates.ContainsKey(coordinate);
     }
 
-    public string Value(Coordinate coordinate)
+    public T Value(Coordinate coordinate)
     {
         return Coordinates[coordinate];
     }
 
-    public string TryGetCoordinateValue(Coordinate coordinate)
+    public void SetValue(Coordinate coordinate, T value)
     {
-        return Coordinates.GetValueOrDefault(coordinate);
+        Coordinates[coordinate] = value;
     }
 
-    public List<KeyValuePair<Coordinate, string>> Values()
+    public bool TryGetCoordinateValue(Coordinate coordinate, out T value)
+    {
+        return Coordinates.TryGetValue(coordinate, out value);
+    }
+
+    public List<KeyValuePair<Coordinate, T>> Values()
     {
         return Coordinates.ToList();
     }

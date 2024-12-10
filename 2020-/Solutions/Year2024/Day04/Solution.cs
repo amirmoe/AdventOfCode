@@ -10,10 +10,9 @@ internal class Day04 : ASolution
     {
     }
 
-
     protected override string SolvePartOne()
     {
-        var map = new Map(Input);
+        var map = new Map<string>(Input);
         return map
             .Values()
             .Select(kvp =>
@@ -33,22 +32,28 @@ internal class Day04 : ASolution
     protected override string SolvePartTwo()
     {
         var check = new List<string> { "M", "S" };
-        var map = new Map(Input);
+        var map = new Map<string>(Input);
 
         return map.Values().Select(kvp =>
             {
                 var (coordinate, value) = kvp;
                 if (value != "A") return false;
+
+                var northWestValue = map.TryGetCoordinateValue(coordinate.Neighbour(Direction.NorthWest), out var nw) ? nw : null;
+                var southEastValue = map.TryGetCoordinateValue(coordinate.Neighbour(Direction.SouthEast), out var se) ? se : null;
+                var northEastValue = map.TryGetCoordinateValue(coordinate.Neighbour(Direction.NorthEast), out var ne) ? ne : null;
+                var southWestValue = map.TryGetCoordinateValue(coordinate.Neighbour(Direction.SouthWest), out var sw) ? sw : null;
+
                 var diagonalValues1 = new List<string>
                 {
-                    map.TryGetCoordinateValue(coordinate.Neighbour(Direction.NorthWest)),
-                    map.TryGetCoordinateValue(coordinate.Neighbour(Direction.SouthEast))
+                    northWestValue,
+                    southEastValue
                 };
 
                 var diagonalValues2 = new List<string>
                 {
-                    map.TryGetCoordinateValue(coordinate.Neighbour(Direction.NorthEast)),
-                    map.TryGetCoordinateValue(coordinate.Neighbour(Direction.SouthWest))
+                    northEastValue,
+                    southWestValue
                 };
 
                 return check.All(diagonalValues1.Contains) && check.All(diagonalValues2.Contains);
@@ -59,14 +64,14 @@ internal class Day04 : ASolution
 
 
     private static bool XmasSearch(
-        Map map,
+        Map<string> map,
         Coordinate coordinate,
         Direction direction,
         string word,
         int index)
     {
         var neighbourCoordinate = coordinate.Neighbour(direction);
-        if (map.TryGetCoordinateValue(neighbourCoordinate) == word[index].ToString())
+        if (map.TryGetCoordinateValue(neighbourCoordinate, out var neighbourValue) && neighbourValue == word[index].ToString())
             return index == word.Length - 1 || XmasSearch(map, neighbourCoordinate, direction, word, index + 1);
 
         return false;
